@@ -1,31 +1,21 @@
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include<arpa/inet.h>
 
 void communicateServer(int clientSocket){
-	char send_buffer[1024];
-	char receive_buffer[1024];
 	
-	while(1){
-		bzero(send_buffer,1024);
-		printf("Enter the message for server \n");
-		fgets(send_buffer,1024,stdin);
-		write(clientSocket,send_buffer,sizeof(send_buffer));
-		
-		bzero(receive_buffer,1024);
-		read(clientSocket,receive_buffer,sizeof(receive_buffer));
-		printf("Message from server \n");
-		printf("%s \n",receive_buffer);
+	char *buff = (char *)malloc(sizeof(char));
+	printf("Enter the filename \n");
+	fgets(buff,255,stdin);
+	write(clientSocket,buff,sizeof(buff));
+	read(clientSocket,buff,sizeof(buff));
 
-		
-		if(strncmp(receive_buffer,"exit",4)==0)
-			break;
-		
-		
-	}
+	printf("Reply from server \n %s",buff);
 }
+
 
 void main(){
 
@@ -38,8 +28,9 @@ void main(){
 
 	if(clientSocket == -1 )
 		printf("Socket creation failed \n");
-	else
+	else{
 		printf("Socket creation successful \n");
+	
 
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(8000);
@@ -56,7 +47,7 @@ void main(){
 		communicateServer(clientSocket);
 		close(clientSocket);
 	}
-
+}
 
 
 }
