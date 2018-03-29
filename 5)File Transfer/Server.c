@@ -28,7 +28,7 @@ void communicateClient(int connectionSocket){
 	
 
 	file = open(filename,O_RDONLY);
-	printf("%d \n",file);
+	//printf("%d \n",file);
 	if(file <= 0){
 	 printf("File couldn't be opened with error %s  \n",strerror(errno)); 
 	 strcpy(buff,"File couldn't be opened");

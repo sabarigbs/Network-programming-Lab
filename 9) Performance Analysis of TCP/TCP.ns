@@ -1,0 +1,166 @@
+#------------------------------------------------------- 
+# This ns script has been created by the nam editor.
+# If you edit it manually, the nam editor might not
+# be able to open it properly in the future.
+#
+# EDITING BY HAND IS AT YOUR OWN RISK!
+#------------------------------------------------------- 
+# Create a new simulator object.
+set ns [new Simulator]
+# Create a nam trace datafile.
+set namfile [open /home/sabari/NPM/TCP.nam w]
+$ns namtrace-all $namfile
+
+# Create wired nodes.
+set node(3) [$ns node]
+## node(3) at 531.927368,540.453918
+$node(3) set X_ 531.927368
+$node(3) set Y_ 540.453918
+$node(3) set Z_ 0.0
+$node(3) color "black"
+
+set node(2) [$ns node]
+## node(2) at 560.041870,580.398071
+$node(2) set X_ 560.041870
+$node(2) set Y_ 580.398071
+$node(2) set Z_ 0.0
+$node(2) color "black"
+
+set node(1) [$ns node]
+## node(1) at 507.960876,580.705322
+$node(1) set X_ 507.960876
+$node(1) set Y_ 580.705322
+$node(1) set Z_ 0.0
+$node(1) color "black"
+
+
+# Create links between nodes.
+$ns simplex-link $node(3) $node(1) 1.000000Mb 20.000000ms DropTail
+$ns simplex-link-op $node(3) $node(1) queuePos 0.5
+$ns simplex-link-op $node(3) $node(1) color black
+$ns simplex-link-op $node(3) $node(1) orient 120.8deg
+# Set Queue Properties for link 3->1
+[[$ns link $node(3) $node(1)] queue] set limit_ 20
+
+$ns simplex-link $node(3) $node(2) 1.000000Mb 20.000000ms DropTail
+$ns simplex-link-op $node(3) $node(2) queuePos 0.5
+$ns simplex-link-op $node(3) $node(2) color black
+$ns simplex-link-op $node(3) $node(2) orient 54.9deg
+# Set Queue Properties for link 3->2
+[[$ns link $node(3) $node(2)] queue] set limit_ 20
+
+$ns simplex-link $node(2) $node(3) 1.000000Mb 20.000000ms DropTail
+$ns simplex-link-op $node(2) $node(3) queuePos 0.5
+$ns simplex-link-op $node(2) $node(3) color black
+$ns simplex-link-op $node(2) $node(3) orient 234.9deg
+# Set Queue Properties for link 2->3
+[[$ns link $node(2) $node(3)] queue] set limit_ 20
+
+$ns simplex-link $node(2) $node(1) 1.000000Mb 20.000000ms DropTail
+$ns simplex-link-op $node(2) $node(1) queuePos 0.5
+$ns simplex-link-op $node(2) $node(1) color black
+$ns simplex-link-op $node(2) $node(1) orient 179.7deg
+# Set Queue Properties for link 2->1
+[[$ns link $node(2) $node(1)] queue] set limit_ 20
+
+$ns simplex-link $node(1) $node(3) 1.000000Mb 20.000000ms DropTail
+$ns simplex-link-op $node(1) $node(3) queuePos 0.5
+$ns simplex-link-op $node(1) $node(3) color black
+$ns simplex-link-op $node(1) $node(3) orient 300.8deg
+# Set Queue Properties for link 1->3
+[[$ns link $node(1) $node(3)] queue] set limit_ 20
+
+$ns simplex-link $node(1) $node(2) 1.000000Mb 20.000000ms DropTail
+$ns simplex-link-op $node(1) $node(2) queuePos 0.5
+$ns simplex-link-op $node(1) $node(2) color black
+$ns simplex-link-op $node(1) $node(2) orient 359.7deg
+# Set Queue Properties for link 1->2
+[[$ns link $node(1) $node(2)] queue] set limit_ 20
+
+# Add Link Loss Models
+
+# Create agents.
+set agent(6) [new Agent/TCPSink]
+$ns attach-agent $node(3) $agent(6)
+$agent(6) set packetSize_ 210
+set agent(3) [new Agent/TCP]
+$ns attach-agent $node(3) $agent(3)
+
+$ns color 3 "black"
+$agent(3) set fid_ 3
+$agent(3) set packetSize_ 210
+$agent(3) set window_ 20
+$agent(3) set windowInit_ 1
+$agent(3) set maxcwnd_ 0
+
+# Create traffic sources and add them to the agent.
+set traffic_source(3) [new Application/FTP]
+$traffic_source(3) attach-agent $agent(3)
+$traffic_source(3) set maxpkts_ 256
+set agent(5) [new Agent/TCPSink]
+$ns attach-agent $node(2) $agent(5)
+$agent(5) set packetSize_ 210
+set agent(2) [new Agent/TCP]
+$ns attach-agent $node(2) $agent(2)
+
+$ns color 2 "black"
+$agent(2) set fid_ 2
+$agent(2) set packetSize_ 210
+$agent(2) set window_ 20
+$agent(2) set windowInit_ 1
+$agent(2) set maxcwnd_ 0
+
+# Create traffic sources and add them to the agent.
+set traffic_source(2) [new Application/FTP]
+$traffic_source(2) attach-agent $agent(2)
+$traffic_source(2) set maxpkts_ 256
+set agent(4) [new Agent/TCPSink]
+$ns attach-agent $node(1) $agent(4)
+$agent(4) set packetSize_ 210
+set agent(1) [new Agent/TCP]
+$ns attach-agent $node(1) $agent(1)
+
+$ns color 1 "black"
+$agent(1) set fid_ 1
+$agent(1) set packetSize_ 210
+$agent(1) set window_ 20
+$agent(1) set windowInit_ 1
+$agent(1) set maxcwnd_ 0
+
+# Create traffic sources and add them to the agent.
+set traffic_source(1) [new Application/FTP]
+$traffic_source(1) attach-agent $agent(1)
+$traffic_source(1) set maxpkts_ 256
+
+# Connect agents.
+$ns connect $agent(3) $agent(4)
+
+
+# Traffic Source actions.
+$ns at 0.000000 "$traffic_source(3) start"
+$ns at 60.000000 "$traffic_source(3) stop"
+
+$ns connect $agent(2) $agent(6)
+
+
+# Traffic Source actions.
+$ns at 0.000000 "$traffic_source(2) start"
+$ns at 60.000000 "$traffic_source(2) stop"
+
+$ns connect $agent(1) $agent(5)
+
+
+# Traffic Source actions.
+$ns at 0.000000 "$traffic_source(1) start"
+$ns at 60.000000 "$traffic_source(1) stop"
+
+# Run the simulation
+proc finish {} {
+	global ns namfile
+	$ns flush-trace
+	close $namfile
+	exec nam -r 2000.000000us /home/sabari/NPM/TCP.nam &	
+	exit 0
+	}
+$ns at 60.000000 "finish"
+$ns run
